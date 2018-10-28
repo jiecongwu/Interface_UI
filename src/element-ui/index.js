@@ -11,7 +11,7 @@ import Vue from 'vue'
 import {
   Pagination,
   Dialog,
-  // Autocomplete,
+  Autocomplete,
   Dropdown,
   DropdownMenu,
   DropdownItem,
@@ -28,8 +28,8 @@ import {
   // CheckboxButton,
   CheckboxGroup,
   // Switch,
-  // Select,
-  // Option,
+   Select,
+   Option,
   // OptionGroup,
   Button,
   // ButtonGroup,
@@ -62,8 +62,8 @@ import {
   // Step,
   // Carousel,
   // CarouselItem,
-  // Collapse,
-  // CollapseItem,
+   Collapse,
+   CollapseItem,
   // Cascader,
   // ColorPicker,
   // Transfer,
@@ -80,7 +80,7 @@ import {
 
 Vue.use(Pagination)
 Vue.use(Dialog)
-// Vue.use(Autocomplete)
+Vue.use(Autocomplete)
 Vue.use(Dropdown)
 Vue.use(DropdownMenu)
 Vue.use(DropdownItem)
@@ -97,8 +97,8 @@ Vue.use(Checkbox)
 // Vue.use(CheckboxButton)
 Vue.use(CheckboxGroup)
 // Vue.use(Switch)
-// Vue.use(Select)
-// Vue.use(Option)
+Vue.use(Select)
+Vue.use(Option)
 // Vue.use(OptionGroup)
 Vue.use(Button)
 // Vue.use(ButtonGroup)
@@ -129,10 +129,10 @@ Vue.use(Card)
 // Vue.use(Rate)
 // Vue.use(Steps)
 // Vue.use(Step)
-// Vue.use(Carousel)
-// Vue.use(CarouselItem)
-// Vue.use(Collapse)
-// Vue.use(CollapseItem)
+//Vue.use(Carousel)
+//Vue.use(CarouselItem)
+Vue.use(Collapse)
+Vue.use(CollapseItem)
 // Vue.use(Cascader)
 // Vue.use(ColorPicker)
 // Vue.use(Transfer)

@@ -1,18 +1,25 @@
 import Vue from 'vue'
+import Vuex from 'vuex'
 import App from '@/App'
 import router from '@/router'                 // api: https://github.com/vuejs/vue-router
 import store from '@/store'                   // api: https://github.com/vuejs/vuex
 import VueCookie from 'vue-cookie'            // api: https://github.com/alfhen/vue-cookie
 import '@/element-ui'                         // api: https://github.com/ElemeFE/element
+// fade/zoom 等
+import 'element-ui/lib/theme-chalk/base.css';
+// collapse 展开折叠
+import CollapseTransition from 'element-ui/lib/transitions/collapse-transition';
 import '@/icons'                              // api: http://www.iconfont.cn/
 import '@/element-ui-theme'
 import '@/assets/scss/index.scss'
 import httpRequest from '@/utils/httpRequest' // api: https://github.com/axios/axios
 import { isAuth } from '@/utils'
 import cloneDeep from 'lodash/cloneDeep'
+import '@/views/common/lib/font-awesome/css/font-awesome.min.css' /*引入公共样式*/
 
 Vue.use(VueCookie)
 Vue.config.productionTip = false
+Vue.component(CollapseTransition.name, CollapseTransition)
 
 // 非生产环境, 适配mockjs模拟数据                 // api: https://github.com/nuysoft/Mock
 if (process.env.NODE_ENV !== 'production') {

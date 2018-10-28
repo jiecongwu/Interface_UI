@@ -12,6 +12,8 @@ const HOST = process.env.HOST
 const PORT = process.env.PORT && Number(process.env.PORT)
 
 const devWebpackConfig = merge(baseWebpackConfig, {
+
+
   module: {
     rules: utils.styleLoaders({ sourceMap: config.dev.cssSourceMap, usePostCSS: true })
   },
@@ -37,9 +39,18 @@ const devWebpackConfig = merge(baseWebpackConfig, {
       poll: config.dev.poll,
     }
   },
+
   plugins: [
+    new webpack.ProvidePlugin({
+      Vue:require.resolve("vue"),
+      Vuex:require.resolve("vuex"),
+      $:require.resolve("../src/views/common/js/common.js"),
+      http:require.resolve("../src/utils/httpRequest.js"),
+      helper:require.resolve("../src/views/common/js/helper.js"),
+      session:require.resolve("../src/views/common/js/local")
+    }),
     new webpack.DefinePlugin({
-      'process.env': require('../config/dev.env')
+      'process.env': require('../config/dev.env'),
     }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NamedModulesPlugin(), // HMR shows correct file names in console on update.
