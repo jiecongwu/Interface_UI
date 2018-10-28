@@ -13,8 +13,12 @@
                 <el-col class="col" :span="20-2*level" :style="{margin: 0,fontSize: '14px',color: item.type==0?'gray':'red',whiteSpace: 'nowrap',padding: 0,textOverflow:'ellipsis',overflow:'hidden',textDecoration:item.delete?'line-through':'none'}" @click.native="item.show=!item.show" :title="item.name">
                     {{item.name}}({{item.data.length}})
                 </el-col>
+<!--
                 <div class="col" style="height: 35px;white-space: nowrap;text-align: center;position: absolute;top: 0px;right: 0px;" v-show="item.menu && interfaceEditRole && !search">
-                    <el-dropdown style="height: 100%;cursor: pointer;float: right;margin-right: 3px">
+-->
+              <div class="col" style="height: 35px;white-space: nowrap;text-align: center;position: absolute;top: 0px;right: 0px;" v-show="interfaceEditRole">
+
+                  <el-dropdown style="height: 100%;cursor: pointer;float: right;margin-right: 3px">
                         <div class="el-dropdown-link">
                             <i class="el-icon-more" style="border: 1px rgba(226, 226, 226, 0.71) solid;font-size: 12px;padding: 3px;color:#17B9E6;background-color: white;font-weight: 900 "></i>
                         </div>
@@ -34,7 +38,10 @@
                         <i class="el-icon-delete" style="border: 1px rgba(226, 226, 226, 0.71) solid;font-size: 12px;padding: 3px;color:red;background-color: white;font-weight: 900" v-if="item.type==0" @click="removeGroup(item)" title="删除分组"></i>
                     </div>
                     <template v-if="interfaceEditRole && item.type==0">
+<!--
                         <div style="height: 35px;line-height: 35px;display: inline-block;margin-right: 3px;float: right;" v-if="template.length==0">
+-->
+                        <div style="height: 35px;line-height: 35px;display: inline-block;margin-right: 3px;float: right;" v-if="false">
                             <i class="el-icon-plus" style="border: 1px rgba(226, 226, 226, 0.71) solid;font-size: 12px;padding: 3px;color:#17B9E6;background-color: white;font-weight: 900" @click="addInterface(item)" title="新建接口"></i>
                         </div>
                         <el-dropdown style="height: 100%;cursor: pointer;float: right;margin-right: 3px" v-else>
@@ -107,7 +114,8 @@
                 return this.$store.getters.template;
             },
             interfaceEditRole:function () {
-                return this.$store.getters.interfaceEditRole;
+               // return this.$store.getters.interfaceEditRole;
+              return true;
             },
             arr:function () {
                 if(this.level==0)
@@ -128,7 +136,7 @@
                 }
             },
             search:function () {
-                return this.$store.state.searchText
+                return this.$store.state.interf.searchText;
             }
         },
         methods:{
@@ -300,7 +308,7 @@
                 session.remove("snapshotDis");
                 session.remove("snapshotCreator");
                 session.remove("snapshotDate");
-                this.$store.dispatch("add",{
+                this.$store.dispatch("interf/add",{
                     item:null,
                     id:item._id
                 })
