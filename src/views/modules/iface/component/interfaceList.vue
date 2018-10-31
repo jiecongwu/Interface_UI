@@ -1,7 +1,7 @@
 <template>
     <el-row class="row" style="cursor: pointer;white-space: nowrap;background-color: white" id="tree">
         <template v-for="(item,index) in arr">
-            <el-row class="row" :draggable="interfaceEditRole && ((item.type==0 && session.sort!=2) || session.sort==2)" style="height: 35px;line-height: 35px;white-space: nowrap" :id="item.type==1?'recycle':('group'+index)" @dragover.native="dragOver($event,item)" @dragleave.native="dragLeave($event)" @dragenter.native="dragEnter($event,item)" @drop.native="drop($event,item,index)" @dragend.native="dragEnd($event)" :key="item._id" v-if="level==0 || (item.data && parent.show)" @mouseenter.native="mouseEnter($event,item)" @mouseleave.native="mouseLeave($event,item)" :style="{backgroundColor:item.select?'#50bfff':(item.menu?'rgb(247,246,242':'')}" @dragstart.native="dragStart($event,item,index)">
+            <el-row class="row" :draggable="interfaceEditRole && ((item.type!=2 && session.sort!=2) || session.sort==2)" style="height: 35px;line-height: 35px;white-space: nowrap" :id="item.type==1?'recycle':('group'+index)" @dragover.native="dragOver($event,item)" @dragleave.native="dragLeave($event)" @dragenter.native="dragEnter($event,item)" @drop.native="drop($event,item,index)" @dragend.native="dragEnd($event)" :key="item._id" v-if="level==0 || (item.interfaceList && parent.show)" @mouseenter.native="mouseEnter($event,item)" @mouseleave.native="mouseLeave($event,item)" :style="{backgroundColor:item.select?'#50bfff':(item.menu?'rgb(247,246,242':'')}" @dragstart.native="dragStart($event,item,index)">
                 <template v-if="level>0">
                     <el-col :span="2" class="col"v-for="(n,index) in level"  :key="index" :style="{'borderRight':'1px lightgray dashed'}">
                         &nbsp;
@@ -10,8 +10,8 @@
                 <el-col class="col" :span="4" style="text-align: center;white-space: nowrap" @click.native="item.show=!item.show">
                     <span :class="item.show?'fa fa-folder-open':'fa fa-folder'" style="color:#c7c7c7;font-size: 13px "></span>
                 </el-col>
-                <el-col class="col" :span="20-2*level" :style="{margin: 0,fontSize: '14px',color: item.type==0?'gray':'red',whiteSpace: 'nowrap',padding: 0,textOverflow:'ellipsis',overflow:'hidden',textDecoration:item.delete?'line-through':'none'}" @click.native="item.show=!item.show" :title="item.name">
-                    {{item.name}}({{item.data.length}})
+                <el-col class="col" :span="20-2*level" :style="{margin: 0,fontSize: '14px',color: item.type==1?'black':'blue',whiteSpace: 'nowrap',padding: 0,textOverflow:'ellipsis',overflow:'hidden',textDecoration:item.delete?'line-through':'none'}" @click.native="item.show=!item.show" :title="item.name">
+                    {{item.name}}({{item.interfaceList.length}})
                 </el-col>
 <!--
                 <div class="col" style="height: 35px;white-space: nowrap;text-align: center;position: absolute;top: 0px;right: 0px;" v-show="item.menu && interfaceEditRole && !search">
@@ -23,21 +23,20 @@
                             <i class="el-icon-more" style="border: 1px rgba(226, 226, 226, 0.71) solid;font-size: 12px;padding: 3px;color:#17B9E6;background-color: white;font-weight: 900 "></i>
                         </div>
                         <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item  v-if="item.type==0"><div @click="addGroup(item)">新建分组</div></el-dropdown-item>
+                            <el-dropdown-item  v-if="item.type==1"><div @click="addGroup(item)">新建分组</div></el-dropdown-item>
                             <el-dropdown-item ><div @click="refresh">刷新</div></el-dropdown-item>
-                            <el-dropdown-item  v-if="item.type==0"><div @click="renameGroup(item)">重命名</div></el-dropdown-item>
-                            <el-dropdown-item  v-if="item.type==1"><div @click="clear">清空</div></el-dropdown-item>
-                            <el-dropdown-item  v-if="item.type==0 && objCopy"><div @click="paste(item)">粘贴</div></el-dropdown-item>
-                            <el-dropdown-item v-if="item.type==0"><div @click="importInterface(item)">导入接口</div></el-dropdown-item>
-                            <el-dropdown-item v-if="item.type==0"><div @click="exportGroup(item)" >导出分组</div></el-dropdown-item>
-                            <el-dropdown-item v-if="item.type==0"><div @click="importGroup(item)">导入分组</div></el-dropdown-item>
-                            <el-dropdown-item v-if="item.type==0 && item.delete"><div @click="mergeGroup(item)" >合并</div></el-dropdown-item>
+                            <el-dropdown-item  v-if="item.type==1"><div @click="renameGroup(item)">重命名</div></el-dropdown-item>
+                            <el-dropdown-item  v-if="item.type==1 && objCopy"><div @click="paste(item)">粘贴</div></el-dropdown-item>
+                            <el-dropdown-item v-if="item.type==1"><div @click="importInterface(item)">导入接口</div></el-dropdown-item>
+                            <el-dropdown-item v-if="item.type==1"><div @click="exportGroup(item)" >导出分组</div></el-dropdown-item>
+                            <el-dropdown-item v-if="item.type==1"><div @click="importGroup(item)">导入分组</div></el-dropdown-item>
+                            <el-dropdown-item v-if="item.type==1 && item.delete"><div @click="mergeGroup(item)" >合并</div></el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
                     <div style="height: 35px;line-height: 35px;display: inline-block;margin-right: 3px;float: right;" v-if="interfaceEditRole">
-                        <i class="el-icon-delete" style="border: 1px rgba(226, 226, 226, 0.71) solid;font-size: 12px;padding: 3px;color:red;background-color: white;font-weight: 900" v-if="item.type==0" @click="removeGroup(item)" title="删除分组"></i>
+                        <i class="el-icon-delete" style="border: 1px rgba(226, 226, 226, 0.71) solid;font-size: 12px;padding: 3px;color:red;background-color: white;font-weight: 900" v-if="item.type==1" @click="removeGroup(item)" title="删除分组"></i>
                     </div>
-                    <template v-if="interfaceEditRole && item.type==0">
+                    <template v-if="interfaceEditRole && item.type==1">
 <!--
                         <div style="height: 35px;line-height: 35px;display: inline-block;margin-right: 3px;float: right;" v-if="template.length==0">
 -->
@@ -57,9 +56,9 @@
                 </div>
             </el-row>
             <el-collapse-transition>
-                <interfacelist v-if="item.data && item.data.length>0 && item.show" :level="level+1" :data="item.data" :parent="item"></interfacelist>
+                <interfacemenu v-if="item.interfaceList && item.interfaceList.length>0 && item.show" :level="level+1" :data="item.interfaceList" :parent="item"></interfacemenu>
             </el-collapse-transition>
-            <el-row class="row" :draggable="interfaceEditRole" style="height: 35px;line-height: 35px;cursor: move" @mouseenter.native="mouseEnter($event,item)" @mouseleave.native="mouseLeave($event,item)" @click.native="info(item,index,$event)" :section="index" :row="index" :style="{backgroundColor:item.select?'#50bfff':(item.menu?'rgb(247,246,242':'')}" @dragstart.native="dragStart($event,item,index)" @dragenter.native="dragEnter($event,item)" @dragover.native="dragOver($event,item)" @dragleave.native="dragLeave($event)" @drop.native="drop($event,item,index)" @dragend.native="dragEnd($event)" :key="item._id" v-if="!item.data && parent.show">
+            <el-row class="row" :draggable="interfaceEditRole" style="height: 35px;line-height: 35px;cursor: move" @mouseenter.native="mouseEnter($event,item)" @mouseleave.native="mouseLeave($event,item)" @click.native="info(item,index,$event)" :section="index" :row="index" :style="{backgroundColor:item.select?'#50bfff':(item.menu?'rgb(247,246,242':'')}" @dragstart.native="dragStart($event,item,index)" @dragenter.native="dragEnter($event,item)" @dragover.native="dragOver($event,item)" @dragleave.native="dragLeave($event)" @drop.native="drop($event,item,index)" @dragend.native="dragEnd($event)" :key="item._id" v-if="!item.interfaceList && parent.show">
                 <template v-if="level>0">
                     <el-col :span="2" class="col" v-for="(n,index) in level"  :key="index" :style="{'borderRight':'1px lightgray dashed'}">
                         &nbsp;
@@ -68,7 +67,7 @@
                 <el-col class="col" :span="4" :style="{fontSize: '13px',margin: 0,color:item.select?'white':methodColor(item.finish),padding:0,lineHeight:'35px','textAlign':'center',textDecoration:(parent.type==0 && item.delete)?'line-through':'none'}" name="treeMethod">
                     {{item.method=="DELETE"?"DEL":item.method}}
                 </el-col>
-                <el-col class="col" :span="20-2*level" :style="{fontSize:'14px',margin: 0,color:item.select?'white':'gray',lineHeight:'35px',textOverflow:'ellipsis',overflow:'hidden',textDecoration:item.delete?'line-through':'none'}" name="treeName" :title="item.name">
+                <el-col class="col" :span="20-2*level" :style="{fontSize:'14px',margin: 0,color:item.select?'white':'blue',lineHeight:'35px',textOverflow:'ellipsis',overflow:'hidden',textDecoration:item.delete?'line-through':'none'}" name="treeName" :title="item.name">
                     {{item.name}}
                 </el-col>
                 <div class="col" style="margin: 0;height: 35px;white-space: nowrap;text-align: center;position: absolute;top: 0px;right: 0px;width: 40px" v-show="item.menu">
@@ -94,19 +93,18 @@
     var dragItem=null,lastEle=null;
     var sessionChange=require("@/views/common/mixins/session");
     export default{
-        name:"interfacelist",
+        name:"interfacemenu",
         props:{
             level:{
                 type:Number,
                 default:0
             },
             data:Array,
-            parent:Object
+            parent:Object,
         },
         data:function () {
             return {
-
-            }
+                       }
         },
         mixins:[sessionChange],
         computed:{
@@ -120,7 +118,14 @@
             arr:function () {
                 if(this.level==0)
                 {
-                    return this.$store.state.interf.searchText?this.$store.state.interf.interfaceSearchList:this.$store.state.interf.interfaceList
+                  return this.$store.state.interf.interfaceList;
+             /*     console.log(this.$store.state.interf.interfaceList);
+                  console.log("this.interface1");
+
+                  console.log(this.interface1);
+                  this.interface1;*/
+
+
                 }
                 else
                 {
@@ -310,7 +315,7 @@
                 session.remove("snapshotDate");
                 this.$store.dispatch("interf/add",{
                     item:null,
-                    id:item._id
+                    id:item.projectId
                 })
             },
             dragStart:function (event,item,index) {

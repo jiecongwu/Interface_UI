@@ -29,5 +29,6 @@ export default new Vuex.Store({
      // return interf.init
     }
   },
-  strict: process.env.NODE_ENV !== 'production'
+  // strict: process.env.NODE_ENV !== 'production'
+  strict:false
 })

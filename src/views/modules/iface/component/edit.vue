@@ -2,34 +2,33 @@
     <el-row class="row">
         <el-row class="row" style="height: 35px;line-height: 35px">
             <el-tooltip class="item" effect="dark" content="启用自动保存后，每5秒自动保存当前接口编辑信息" placement="bottom">
-                <el-checkbox v-model="$store.state.autoSave" :true-label="1" :false-label="0" style="font-size: 14px">自动保存</el-checkbox>
+                <el-checkbox v-model="$store.state.interf.autoSave" :true-label="1" :false-label="0" style="font-size: 14px">自动保存</el-checkbox>
             </el-tooltip>
-            <el-button size="mini" type="text" icon="fa fa-arrows-alt" style="margin-left: 5px;font-size: 15px" title="放大/缩小" @click="$store.getters.event.$emit('toggleMax')"></el-button>
-            <el-button size="mini" type="text" icon="el-icon-document" style="margin-left: 5px;font-size: 15px" title="文档引用" @click="docRef" v-if="interfaceEdit._id"></el-button>
-            <el-button type="primary" size="mini" style="float: right;margin-top: 4px;margin-right: 5px;margin-left: 0px" @click="$store.dispatch('changeType','run')" v-if="arrExample.length==0">
+            <el-button size="mini" type="text" icon="fa fa-arrows-alt" style="margin-left: 5px;font-size: 15px" title="放大/缩小" @click="maxorsmall"></el-button>
+<!--          <el-button type="primary" size="mini" style="float: right;margin-top: 4px;margin-right: 5px;margin-left: 0px" @click="$store.dispatch('interf/changeType','run')" v-if="arrExample.length==0">
                 运行
-            </el-button>
-<!--            <el-dropdown split-button type="primary" size="mini" style="float: right;margin-right: 5px;margin-left: 0px" @click="$store.dispatch('changeType','run')" v-else>
+            </el-button>-->
+<!--            <el-dropdown split-button type="primary" size="mini" style="float: right;margin-right: 5px;margin-left: 0px" @click="$store.dispatch('interf/changeType','run')" v-else>
                 运行
                 <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item v-for="item in arrExample"  @click.native="run(item)">
+                    <el-dropdown-item v-for="item in arrExample" @click.native="run(item)">
                         {{item.name}}
                     </el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>-->
-            <el-dropdown split-button type="primary" size="mini" style="float: right;margin-right: 5px;margin-left: 0px" @click="save" v-if="interfaceEditRole" id="btnSave" :loading="savePending" :disabled="savePending">
+           <el-dropdown split-button type="primary" size="mini" style="float: right;margin-right: 5px;margin-left: 0px" @click="save" v-if="interfaceEditRole" id="btnSave" :loading="savePending" :disabled="savePending">
                 <span v-if="!savePending">保存</span>
                 <i class="el-icon-loading" v-else></i>
                 <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item @click.native="saveTemplate">保存为模板</el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
-            <el-button size="mini" style="float: right;margin-top: 4px;margin-right: 5px;margin-left: 0" @click="$store.dispatch('changeType','preview')">
+            <el-button size="mini" style="float: right;margin-top: 4px;margin-right: 5px;margin-left: 0" @click="$store.dispatch('interf/changeType','preview')">
                 预览
             </el-button>
-            <transition name="el-fade-in-linear">
+<!--            <transition name="el-fade-in-linear">
                 <i class="fa fa-envelope-o" id="mail" v-show="mailShow"  style="float: right;margin-top: 9px;color:#17B9E6;margin-right: 5px;cursor: pointer;width: auto " @click="sendMail"></i>
-            </transition>
+            </transition>-->
         </el-row>
         <el-row class="row" style="margin-top: 5px;overflow-y: auto;height: calc(100vh - 150px);padding-bottom: 80px">
             <el-row class="row" style="background-color: white;border-radius: 5px;box-shadow: 0 2px 4px 0 rgba(0,0,0,.12), 0 0 6px 0 rgba(0,0,0,.04)">
@@ -60,7 +59,7 @@
                     <el-row class="row">
                         <el-col class="col" :span="12">
                             <el-form-item label="分组">
-                                <el-cascader expand-trigger="hover" :options="arrGroup" :show-all-levels="false" style="width: 90%;text-align: center" v-model="group" :disabled="objSnapshot.id" size="small"></el-cascader>
+                                <el-cascader expand-trigger="hover" :options="arrGroup" change-on-select :show-all-levels="false" style="width: 90%;text-align: center" v-model="group" :disabled="objSnapshot.id" size="small"></el-cascader>
                             </el-form-item>
                         </el-col>
                         <el-col class="col" :span="12">
@@ -85,13 +84,13 @@
                             <el-input size="small" style="width: calc(75% - 14px);margin-left: 10px" placeholder="请输入接口路径(不包含BaseUrl)" v-model.trim="interfaceEdit.url" @input="changeUrl" @paste.native="paste"></el-input>
                         </el-form-item>
                     </el-row>
-                    <el-row class="row" v-if="interfaceEdit.id">
+                   <!-- <el-row class="row" v-if="interfaceEdit.id">
                         <el-form-item label="分享">
                             <el-input size="small" style="width: 95%" v-model="shareUrl" id="shareUrl" disabled>
                                 <i slot="suffix" class="el-input__icon fa fa-copy" @click="copyClipboard" title="复制" style="cursor: pointer"></i>
                             </el-input>
                         </el-form-item>
-                    </el-row>
+                    </el-row>-->
                 </el-form>
             </el-row>
             <!--<el-row class="row" style="background-color: white;margin-top: 15px;border-radius: 5px;box-shadow: 0 2px 4px 0 rgba(0,0,0,.12), 0 0 6px 0 rgba(0,0,0,.04);" v-if="interfaceEdit._id">
@@ -125,7 +124,7 @@
                     </template>
                 </el-row>
             </el-row>-->
-            <el-tabs type="border-card" editable @edit="editTab" style="background-color: white;padding: 0px;margin-top: 15px;border-radius: 5px;" id="mainParam" v-model="tabIndex">
+<!--            <el-tabs type="border-card" editable @edit="editTab" style="background-color: white;padding: 0px;margin-top: 15px;border-radius: 5px;" id="mainParam" v-model="tabIndex">
                 <template v-for="(item, index) in param">
                     <el-tab-pane :key="item.id" :name="index">
                     <span slot="label">
@@ -142,13 +141,15 @@
                                 <el-dropdown-item @click.native="cloneParam(item)">克隆</el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
-                    </span>
-<!--
-                        <interfaceparam :index="index" :item="item"></interfaceparam>
--->
-                    </el-tab-pane>
+                    </span>-->
+
+
+                     <interfaceparam ></interfaceparam>
+
+
+<!--                    </el-tab-pane>
                 </template>
-            </el-tabs>
+            </el-tabs>-->
         </el-row>
     </el-row>
 </template>
@@ -188,8 +189,8 @@
 
 <script>
    // var con=require("common/js/config");
-   // var interfaceParam=require("./interfaceParam.vue");
-  //  var saveTemplate=require("./saveTemplate.vue")
+    var interfaceParam=require("./interfaceParam.vue");
+    //var saveTemplate=require("./saveTemplate.vue")
     export default {
         data: function () {
             return {
@@ -200,9 +201,9 @@
             }
         },
         components:{
-          //  "interfaceparam":interfaceParam
+            "interfaceparam":interfaceParam
         },
-        computed:{
+       computed:{
             arrExample:function () {
                 var id=this.param[this.index].id;
                 if(id && this.$store.state.example[id])
@@ -215,7 +216,7 @@
                 }
             },
             interfaceEdit:function () {
-                return this.$store.state.interfaceEdit
+                return this.$store.state.interf.interfaceEdit
             },
             editInfo:function () {
                 return this.interfaceEdit?(this.interfaceEdit.createdAt?((this.interfaceEdit.owner?this.interfaceEdit.owner.name:"")+"在"+this.interfaceEdit.createdAt+"创建，最近修改被"+(this.interfaceEdit.editor?this.interfaceEdit.editor.name:"")+"在"+this.interfaceEdit.updatedAt+"改动"):"接口尚未保存"):"";
@@ -245,7 +246,10 @@
             group:{
                 get:function () {
                     var val=this.interfaceEdit.group._id;
-                    var arr=this.arrGroup;
+                    console.log("val:");
+                  console.log(this.interfaceEdit);
+
+                  var arr=this.arrGroup;
                     var ret=[];
                     (function _map(arr) {
                         for(var i=0;i<arr.length;i++)
@@ -258,7 +262,8 @@
                             }
                             else if(obj.children)
                             {
-                                var v=arguments.callee(obj.children);
+                                //var v=arguments.callee(obj.children);
+                              var v=_map(obj.children);
                                 if(v)
                                 {
                                     return true;
@@ -282,23 +287,25 @@
                 }
             },
             arrGroup:function () {
-                var arr=this.$store.state.interfaceList;
+                var arr=this.$store.state.interf.interfaceList;
                 var arrGroup=[];
                 (function _map(arr,arrGroup) {
                     for(var i=0;i<arr.length;i++)
                     {
                         var obj=arr[i];
-                        if(obj.data)
+                        if(obj.interfaceList)
                         {
                             var obj1={
-                                value:obj._id,
+                                value:obj.projectId,
                                 label:obj.name,
                             };
-                            if(obj.data.length>0)
+                            if(obj.interfaceList.length>0)
                             {
                                 obj1.children=[];
-                                arguments.callee(obj.data,obj1.children);
-                                if(obj1.children.length==0)
+                                //arguments.callee(obj.interfaceList,obj1.children);
+                               _map(obj.interfaceList,obj1.children);
+
+                              if(obj1.children.length==0)
                                 {
                                     delete obj1.children
                                 }
@@ -307,6 +314,7 @@
                         }
                     }
                 })(arr,arrGroup);
+                console.log(arrGroup);
                 return arrGroup;
             },
             objSnapshot:function () {
@@ -326,12 +334,13 @@
                 return this.snapshot;
             },
             interfaceEditRole:function () {
-                return this.$store.getters.interfaceEditRole
+               // return this.$store.getters.interfaceEditRole
+              return true;
             },
             shareUrl:function () {
                 if(this.interfaceEdit)
                 {
-                    return con.baseUrl+"/html/web/controller/share/share.html#"+this.interfaceEdit._id;
+                   // return con.baseUrl+"/html/web/controller/share/share.html#"+this.interfaceEdit._id;
                 }
                 else
                 {
@@ -339,6 +348,7 @@
                 }
             },
         },
+
         watch:{
             "objSnapshot.dis":function (val) {
                 session.set("snapshotDis",val);
@@ -398,7 +408,10 @@
             }
         },
         methods: {
-            changeMethod:function () {
+          maxorsmall: function () {
+            this.$emit('wathtoggleMax');
+          },
+           changeMethod:function () {
                 this.$store.commit("changeMethod");
             },
             save:function () {
@@ -550,7 +563,7 @@
                     return true;
                 })
             },
-            /*snapshotList:function () {
+            snapshotList:function () {
                 var _this=this;
                 $.startHud();
                 net.get("/interface/snapshotlist",{
@@ -560,10 +573,10 @@
                     $.stopHud();
                     if(data.code==200)
                     {
-                        var child=$.showBox(_this,require("./snapshotList.vue"),{
+/*                        var child=$.showBox(_this,require("./snapshotList.vue"),{
                             arr:data.data,
                             id:_this.interfaceEdit._id
-                        });
+                        });*/
 
                     }
                     else
@@ -571,7 +584,7 @@
                         $.notify(data.msg,0);
                     }
                 })
-            },*/
+            },
             returnMaster:function () {
                 session.remove("snapshotId");
                 session.remove("snapshotDis");
@@ -682,7 +695,7 @@
             editTab:function (target,action) {
                 if(action=="add")
                 {
-                    this.$store.commit("addParam");
+                    this.$store.commit("interf/addParam");
                 }
                 else if(action=="remove")
                 {
@@ -694,7 +707,7 @@
                     else
                     {
                         $.confirm("是否删除该Tab",function () {
-                            _this.$store.commit("removeParam",target);
+                            _this.$store.commit("interf/removeParam",target);
                         })
                     }
                 }
@@ -757,7 +770,7 @@
                         $.notify(obj2.msg,0);
                         return;
                     }
-            /*        $.showBox(_this,require("./sendMail.vue"),{
+/*                  $.showBox(_this,require("./sendMail.vue"),{
                         source:user,
                         id:_this.interfaceEdit._id
                     })*/
@@ -779,7 +792,7 @@
                 },1,this.interfaceEdit.remark)
             },
             saveTemplate:function () {
-             //   $.showBox(this,saveTemplate);
+                $.showBox(this,saveTemplate);
             },
             initInterface:function (data) {
                 this.mailShow=false;
@@ -800,7 +813,7 @@
                         }
                         else
                         {
-                           /* $.showBox(_this,require("./docRef.vue"),{
+                /*            $.showBox(_this,require("./docRef.vue"),{
                                 arr:data.data,
                                 id:_this.interfaceEdit._id
                             })*/
@@ -837,10 +850,10 @@
         },
         created:function () {
             var _this=this;
-            this.$store.getters.event.$on("initInterface",this.initInterface)
+           // this.$store.getters.event.$on("initInterface",this.initInterface)
         },
         beforeDestroy:function () {
-            this.$store.getters.event.$off("initInterface",this.initInterface)
+           // this.$store.getters.event.$off("initInterface",this.initInterface)
             if(this.timerSave)
             {
                 clearTimeout(this.timerSave);
@@ -850,5 +863,6 @@
         mounted:function () {
             this.exampleList();
         }
+
     }
 </script>
