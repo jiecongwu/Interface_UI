@@ -26,6 +26,9 @@
             <el-button size="mini" style="float: right;margin-top: 4px;margin-right: 5px;margin-left: 0" @click="$store.dispatch('interf/changeType','preview')">
                 预览
             </el-button>
+          <el-button size="mini" style="float: right;margin-top: 4px;margin-right: 5px;margin-left: 0" @click="tocase">
+            用例
+          </el-button>
 <!--            <transition name="el-fade-in-linear">
                 <i class="fa fa-envelope-o" id="mail" v-show="mailShow"  style="float: right;margin-top: 9px;color:#17B9E6;margin-right: 5px;cursor: pointer;width: auto " @click="sendMail"></i>
             </transition>-->
@@ -43,7 +46,7 @@
                     <el-row class="row">
                         <el-col class="col" :span="12">
                             <el-form-item label="名称">
-                                <el-input style="width: 90%" size="small" v-model="interfaceEdit.name" placeholder="请输入接口名称"></el-input>
+                                <el-input style="width: 90%" size="small" v-model="interfaceEdit.infName" placeholder="请输入接口名称"></el-input>
                             </el-form-item>
                         </el-col>
                         <el-col class="col" :span="12">
@@ -74,16 +77,18 @@
                     </el-row>
                     <el-row class="row">
                         <el-form-item label="路径">
-                            <el-select style="width: 20%;text-align: center" v-model="interfaceEdit.method" @input="changeMethod" size="small">
+                            <el-select style="width: 20%;text-align: center" v-model="interfaceEdit.infMethod" @input="changeMethod" size="small">
                                 <el-option  value="GET"></el-option>
                                 <el-option  value="POST"></el-option>
                                 <el-option  value="PUT"></el-option>
                                 <el-option  value="DELETE"></el-option>
                                 <el-option  value="PATCH"></el-option>
                             </el-select>
-                            <el-input size="small" style="width: calc(75% - 14px);margin-left: 10px" placeholder="请输入接口路径(不包含BaseUrl)" v-model.trim="interfaceEdit.url" @input="changeUrl" @paste.native="paste"></el-input>
+                            <el-input size="small" style="width: calc(75% - 14px);margin-left: 10px" placeholder="请输入接口路径(不包含BaseUrl)" v-model.trim="interfaceEdit.infUrl" @input="changeUrl" @paste.native="paste"></el-input>
+
                         </el-form-item>
                     </el-row>
+
                    <!-- <el-row class="row" v-if="interfaceEdit.id">
                         <el-form-item label="分享">
                             <el-input size="small" style="width: 95%" v-model="shareUrl" id="shareUrl" disabled>
@@ -124,32 +129,24 @@
                     </template>
                 </el-row>
             </el-row>-->
-<!--            <el-tabs type="border-card" editable @edit="editTab" style="background-color: white;padding: 0px;margin-top: 15px;border-radius: 5px;" id="mainParam" v-model="tabIndex">
-                <template v-for="(item, index) in param">
-                    <el-tab-pane :key="item.id" :name="index">
+          <el-tabs type="border-card"  @edit="editTab" style="background-color: white;padding: 0px;margin-top: 15px;border-radius: 5px;" id="mainParam" v-model="tabIndex">
+            <template>
+              <el-tab-pane>
                     <span slot="label">
-                        <el-tooltip class="item" effect="dark" placement="bottom" width="200" :content="item.remark" v-if="item.remark">
-                            <span>{{item.name}}</span>
+                        <el-tooltip class="item" effect="dark" placement="bottom" width="200" >
+                            <span>参数</span>
                         </el-tooltip>
-                        <span v-else>{{item.name}}</span>&nbsp
-                        <el-dropdown>
-                            <span class="el-dropdown-link">
-                                <i class="el-icon-caret-bottom" style="color:rgb(80, 191, 255) ;"></i>
-                            </span>
-                            <el-dropdown-menu slot="dropdown">
-                                <el-dropdown-item @click.native="editParam(item)">编辑</el-dropdown-item>
-                                <el-dropdown-item @click.native="cloneParam(item)">克隆</el-dropdown-item>
-                            </el-dropdown-menu>
-                        </el-dropdown>
-                    </span>-->
+
+                    </span>
 
 
-                     <interfaceparam ></interfaceparam>
+
+               <interfaceparam :item="interfaceEdit"></interfaceparam>
 
 
-<!--                    </el-tab-pane>
-                </template>
-            </el-tabs>-->
+              </el-tab-pane>
+            </template>
+          </el-tabs>
         </el-row>
     </el-row>
 </template>
@@ -189,8 +186,10 @@
 
 <script>
    // var con=require("common/js/config");
-    var interfaceParam=require("./interfaceParam.vue");
-    //var saveTemplate=require("./saveTemplate.vue")
+   import expand from '@/views/component/expand.vue';
+   import interfaceParam from './interfaceParam.vue';
+   import inParamQuery from './inparamQuery.vue'
+   //var saveTemplate=require("./saveTemplate.vue")
     export default {
         data: function () {
             return {
@@ -201,7 +200,9 @@
             }
         },
         components:{
-            "interfaceparam":interfaceParam
+           "interfaceparam":interfaceParam,
+          "expand":expand,
+
         },
        computed:{
             arrExample:function () {
@@ -222,14 +223,14 @@
                 return this.interfaceEdit?(this.interfaceEdit.createdAt?((this.interfaceEdit.owner?this.interfaceEdit.owner.name:"")+"在"+this.interfaceEdit.createdAt+"创建，最近修改被"+(this.interfaceEdit.editor?this.interfaceEdit.editor.name:"")+"在"+this.interfaceEdit.updatedAt+"改动"):"接口尚未保存"):"";
             },
             param:function () {
-                return this.$store.state.param
+                return this.$store.state.interf.param
             },
             index:function () {
-                return this.$store.state.index
+                return this.$store.state.interf.index
             },
             tabIndex:{
                 get:function () {
-                    var val=this.$store.state.index;
+                    var val=this.$store.state.interf.index;
                     if(val===0)
                     {
                         val="0"
@@ -237,7 +238,7 @@
                     return val;
                 },
                 set:function (val) {
-                    this.$store.commit("setIndex",parseInt(val));
+                    this.$store.commit("interf\setIndex",parseInt(val));
                 }
             },
             baseUrls:function(){
@@ -245,9 +246,9 @@
             },
             group:{
                 get:function () {
-                    var val=this.interfaceEdit.group._id;
+                    var val=this.interfaceEdit.projectId;
                     console.log("val:");
-                  console.log(this.interfaceEdit);
+                  console.log(val);
 
                   var arr=this.arrGroup;
                     var ret=[];
@@ -255,9 +256,10 @@
                         for(var i=0;i<arr.length;i++)
                         {
                             var obj=arr[i];
+
                             ret.push(obj.value);
                             if(obj.value==val)
-                            {
+                              {
                                 return true;
                             }
                             else if(obj.children)
@@ -274,16 +276,17 @@
                                 }
                             }
                             else
-                            {
+                            {console.log("else")
                                 ret.pop();
                             }
                         }
                         return false;
                     })(arr)
-                    return ret;
+
+                  return ret;
                 },
                 set:function (val) {
-                    this.interfaceEdit.group._id=val[val.length-1];
+                  this.interfaceEdit.parentId=val[val.length-1];
                 }
             },
             arrGroup:function () {
@@ -314,7 +317,9 @@
                         }
                     }
                 })(arr,arrGroup);
-                console.log(arrGroup);
+              console.log("arrGroup:");
+
+              console.log(arrGroup);
                 return arrGroup;
             },
             objSnapshot:function () {
@@ -414,24 +419,28 @@
            changeMethod:function () {
                 this.$store.commit("changeMethod");
             },
+          tocase:function () {
+            this.$router.push({ name: "iface-component/edit" });
+          },
             save:function () {
-                if(!this.interfaceEdit.name)
+               console.log(this.interfaceEdit);
+                if(!this.interfaceEdit.infName)
                 {
                     $.tip("请填入接口名称",0);
                     return;
                 }
-                else if(!this.interfaceEdit.url)
+                else if(!this.interfaceEdit.infUrl)
                 {
                     $.tip("请填入接口地址",0);
                     return;
                 }
                 this.savePending=true;
                 var _this=this;
-                this.$store.dispatch("save").then(function (data) {
+                this.$store.dispatch("interf/save").then(function (data) {
                     _this.savePending=false;
-                    if(data.code==200)
+                    if(data)
                     {
-                        if(data.msg.indexOf("成功")>-1)
+                        if(1)
                         {
                             $.notify("保存成功",1)
                         }
@@ -443,12 +452,12 @@
                     }
                     else
                     {
-                        $.notify(data.msg,0)
+                        $.notify(data,0)
                     }
                 })
             },
             changeUrl:function (val) {
-                this.$store.commit("changeUrl",val);
+                this.$store.commit("interf/changeUrl",val);
             },
             paste:function () {
                 var _this=this;

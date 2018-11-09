@@ -1,4 +1,4 @@
-'use strict'
+//'use strict'
 // This is the webpack config used for unit tests.
 
 const utils = require('./utils')

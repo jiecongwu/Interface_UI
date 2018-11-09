@@ -284,25 +284,27 @@
                     pro=helper.default.delay(0);
                 }
                 var _this=this;
+              console.log("item:");
+
+              console.log(item);
                 pro.then(function () {
                     session.remove("snapshotId");
                     session.remove("snapshotDis");
                     session.remove("snapshotCreator");
                     session.remove("snapshotDate");
-                    $.startLoading(2);
-                    _this.$store.dispatch("info",{
-                        item:_this.parent,
-                        item1:item,
-                        index:index
-                    }).then(function (data) {
-                        $.stopLoading()
-                        if(data.code==200)
-                        {
+                  //  $.startLoading(2);
+                    _this.$store.dispatch("interf/info", item.projectId
+                    ).then(({data}) => {
+                     // console.log("stoploading")
+                    //  $.stopLoading()
+
+                      if(data.code==0)
+                      {
 
                         }
                         else
                         {
-                            $.notify(data.msg,0);
+
                         }
                     })
                 })

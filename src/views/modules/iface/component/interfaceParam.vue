@@ -1,62 +1,62 @@
 <template>
     <el-row class="row" style="font-size: 14px" id="paramContent">
-        <expand v-if="param && param.length>0" ref="param">
-            <div slot="title">{{paramTab}}</div>
-            <restparam :index="index" :item="item"></restparam>
-        </expand>
-        <expand ref="query" :expand="queryAutoExpand">
-            <div slot="title">{{queryTab}}</div>
-            <inparamquery :index="index" :item="item"></inparamquery>
-            <el-button size="mini" type="primary" style="margin-top: 5px;margin-left: 10px" @click="importQuery">导入Query字符串</el-button>
-        </expand>
-        <expand ref="header">
-            <div slot="title">{{headerTab}}</div>
-            <inparamheader :index="index" :item="item"></inparamheader>
-            <el-button size="mini" type="primary" style="margin-top: 5px;margin-left: 10px" @click="importHeader">导入HTTP Header字符串</el-button>
-        </expand>
-        <expand v-if="interfaceEdit.method=='POST' || interfaceEdit.method=='PUT' || interfaceEdit.method=='PATCH'" ref="body" :expand="bodyAutoExpand">
-            <div slot="title">{{bodyTab}}</div>
-            <inparambody :index="index" :item="item"></inparambody>
-            <el-button size="mini" type="primary" style="margin-top: 5px;margin-left: 10px" @click="importBody" v-if="bodyInfo.type==0">导入Body字符串</el-button>
-        </expand>
-        <expand ref="inject">
-            <div slot="title">Inject</div>
-            <inparaminject :index="index" :item="item"></inparaminject>
-        </expand>
-        <expand ref="result" :expand="1">
-            <div slot="title">Result</div>
-            <el-row class="row" style="background-color: white;margin-top: 15px;">
-                <el-row class="row" style="padding:0 0 0 20px;height: 30px;line-height: 30px;margin-bottom: 20px">
-                    <el-radio class="radio" :label="0" v-model="outInfo.type"  id="outJson">JSON</el-radio>&nbsp;&nbsp;&nbsp;&nbsp;
-                    <el-radio class="radio" :label="1" v-model="outInfo.type" id="outRaw">Raw</el-radio>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <el-select v-model="outInfo.jsonType" v-if="outInfo.type==0" @input="changeJSONType">
-                        <el-option :value="0" label="Object"></el-option>
-                        <el-option :value="1" label="Array"></el-option>
-                    </el-select>
-                </el-row>
-                <outparam v-if="outInfo.type==0" :index="index" :data="item"></outparam>
-                <el-row class="row" style="height: 60px;line-height: 60px;" v-else>
-                    <el-col class="col" :span="14" style="height: 100%;text-align: center">
-                        <el-tooltip class="item" effect="dark" :content="outInfo.rawRemark" placement="bottom" :disabled="!outInfo.rawRemark">
-                            <el-input size="small" style="width: 90%" placeholder="请输入备注" v-model="outInfo.rawRemark">
-                                <i slot="suffix" class="el-input__icon el-icon-edit" @click="editRemark" style="cursor: pointer"></i>
-                            </el-input>
-                        </el-tooltip>
-                    </el-col>
-                    <el-col class="col" :span="10" style="text-align: center">
-                        <el-tooltip class="item" effect="dark" :content="outInfo.rawMock" placement="bottom" :disabled="!outInfo.rawMock">
-                            <el-input size="small" style="width: 90%" placeholder="请输入Mock数据" v-model="outInfo.rawMock">
-                                <i slot="suffix" class="el-input__icon el-icon-edit" @click="editMock" style="cursor: pointer"></i>
-                            </el-input>
-                        </el-tooltip>
-                    </el-col>
-                </el-row>
-                <el-button type="primary" size="mini" style="margin-top: 5px;margin-left: 20px" @click="importJSON" v-if="outInfo.type==0">
-                    导入JSON
-                </el-button>
-                <span style="right: 50px;font-weight: bold;top: 7px;position: absolute"><a href="/html/web/resource/other/mockrule.html" style="color: #50a3ff;" target="_blank">mock规则</a></span>
-            </el-row>
-        </expand>
+
+<!--      <expand ref="query" :expand="queryAutoExpand">
+        <div slot="title">{{queryTab}}</div>
+        <inparamquery :index="index" :item="item"></inparamquery>
+        <el-button size="mini" type="primary" style="margin-top: 5px;margin-left: 10px" @click="importQuery">导入Query字符串</el-button>
+      </expand>-->
+       <expand ref="header">
+           <div slot="title">{{headerTab}}</div>
+           <inparamheader :item="interfaceEdit"></inparamheader>
+           <el-button size="mini" type="primary" style="margin-top: 5px;margin-left: 10px" @click="importHeader">导入HTTP Header字符串</el-button>
+       </expand>
+
+     <!--  <expand v-if="interfaceEdit.method=='POST' || interfaceEdit.method=='PUT' || interfaceEdit.method=='PATCH'" ref="body" :expand="bodyAutoExpand">
+           <div slot="title">{{bodyTab}}</div>
+
+            <ParamBody :index="index" :item="item"></ParamBody>
+
+           <el-button size="mini" type="primary" style="margin-top: 5px;margin-left: 10px" @click="importBody" v-if="bodyInfo.type==0">导入Body字符串</el-button>
+       </expand>-->
+<!--       <expand ref="inject">
+           <div slot="title">Inject</div>
+           <inparaminject  :item="item"></inparaminject>
+       </expand>-->
+      <!-- <expand ref="result" :expand="1">
+           <div slot="title">Result</div>
+           <el-row class="row" style="background-color: white;margin-top: 15px;">
+               <el-row class="row" style="padding:0 0 0 20px;height: 30px;line-height: 30px;margin-bottom: 20px">
+                   <el-radio class="radio" :label="0" v-model="outInfo.type"  id="outJson">JSON</el-radio>&nbsp;&nbsp;&nbsp;&nbsp;
+                   <el-radio class="radio" :label="1" v-model="outInfo.type" id="outRaw">Raw</el-radio>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                   <el-select v-model="outInfo.jsonType" v-if="outInfo.type==0" @input="changeJSONType">
+                       <el-option :value="0" label="Object"></el-option>
+                       <el-option :value="1" label="Array"></el-option>
+                   </el-select>
+               </el-row>
+               <outparam v-if="outInfo.type==0" :index="index" :data="item"></outparam>
+               <el-row class="row" style="height: 60px;line-height: 60px;" v-else>
+                   <el-col class="col" :span="14" style="height: 100%;text-align: center">
+                       <el-tooltip class="item" effect="dark" :content="outInfo.rawRemark" placement="bottom" :disabled="!outInfo.rawRemark">
+                           <el-input size="small" style="width: 90%" placeholder="请输入备注" v-model="outInfo.rawRemark">
+                               <i slot="suffix" class="el-input__icon el-icon-edit" @click="editRemark" style="cursor: pointer"></i>
+                           </el-input>
+                       </el-tooltip>
+                   </el-col>
+                   <el-col class="col" :span="10" style="text-align: center">
+                       <el-tooltip class="item" effect="dark" :content="outInfo.rawMock" placement="bottom" :disabled="!outInfo.rawMock">
+                           <el-input size="small" style="width: 90%" placeholder="请输入Mock数据" v-model="outInfo.rawMock">
+                               <i slot="suffix" class="el-input__icon el-icon-edit" @click="editMock" style="cursor: pointer"></i>
+                           </el-input>
+                       </el-tooltip>
+                   </el-col>
+               </el-row>
+               <el-button type="primary" size="mini" style="margin-top: 5px;margin-left: 20px" @click="importJSON" v-if="outInfo.type==0">
+                   导入JSON
+               </el-button>
+               <span style="right: 50px;font-weight: bold;top: 7px;position: absolute"><a href="/html/web/resource/other/mockrule.html" style="color: #50a3ff;" target="_blank">mock规则</a></span>
+           </el-row>
+       </expand>-->
     </el-row>
 </template>
 <style>
@@ -65,17 +65,22 @@
     }
 </style>
 <script>
-    var inParamQuery=require("./inparamQuery.vue")
-    var inParamHeader=require("./inparamHeader.vue")
-    var inParamBody=require("./inparamBody.vue")
-    var outParam=require("./outParam.vue")
-    var valueList=require("./valueList.vue")
-    var restParam=require("./restParam.vue")
-    var rawText=require("./rawText.vue")
-    var inParamInject=require("./inparamInject.vue")
-    var expand=require("component/expand.vue");
-    module.exports={
-        props:["index","item","source"],
+  import inParamQuery from './inparamQuery.vue';
+  import inParamHeader from './inparamHeader.vue';
+
+  import ParamBody from './inparamBody.vue';
+
+  import inParamInject from './inparamInject.vue';
+
+  //    var inParamBody=require("./inparamBody.vue")
+//    var outParam=require("./outParam.vue")
+//    var valueList=require("./valueList.vue")
+//    var restParam=require("./restParam.vue")
+//    var rawText=require("./rawText.vue")
+//    var inParamInject=require("./inparamInject.vue")
+  import expand from '@/views/component/expand.vue';
+    export default {
+        props:["item","source"],
         data:function () {
             return {
                 queryAutoExpand:0,
@@ -83,15 +88,17 @@
             }
         },
         components:{
-            "inparamquery":inParamQuery,
-            "inparamheader":inParamHeader,
-            "inparambody":inParamBody,
-            "outparam":outParam,
-            "valuelist":valueList,
-            "restparam":restParam,
-            "rawtext":rawText,
+             "inparamquery":inParamQuery,
+             "inparamheader":inParamHeader,
+
+             "ParamBody":ParamBody,
+
+//            "outparam":outParam,
+//            "valuelist":valueList,
+//            "restparam":restParam,
+  //           "rawtext":rawText,
             "inparaminject":inParamInject,
-            "expand":expand
+             "expand":expand
         },
         watch:{
             "interfaceEdit.method":{
@@ -113,7 +120,7 @@
                 return this.item.rawJSON
             },
             interfaceEdit:function () {
-                return this.source?this.source:this.$store.state.interfaceEdit
+                return this.source?this.source:this.$store.state.interf.interfaceEdit
             },
             outInfo:function () {
                 return this.item.outInfo
@@ -137,7 +144,7 @@
                 })
             },
             headerSave:function () {
-                return this.item.header.filter(function (obj) {
+                return this.item.head.filter(function (obj) {
                     if(obj.name)
                     {
                         return true
