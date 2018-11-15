@@ -420,7 +420,11 @@
                 this.$store.commit("changeMethod");
             },
           tocase:function () {
-            this.$router.push({ name: "iface-component/edit" });
+            console.log(this.interfaceEdit);
+            this.$cookie.set('interface_id', this.interfaceEdit.infId)
+            console.log("interface_id:"+this.$cookie.get('interface_id'));
+
+            this.$router.push({ name: "iface-case/case" });
           },
             save:function () {
                console.log(this.interfaceEdit);

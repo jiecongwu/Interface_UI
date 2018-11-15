@@ -7,7 +7,7 @@
     <template v-if="!loading">
       <main-navbar />
       <main-sidebar />
-      <div class="site-content__wrapper" :style="{ 'min-height': documentClientHeight + 'px' }">
+      <div class="site-content__wrapper" :style="{ 'min-height': documentClientHeight + 'px' } ">
         <main-content />
       </div>
     </template>
