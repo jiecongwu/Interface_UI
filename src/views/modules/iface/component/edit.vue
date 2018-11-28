@@ -420,6 +420,8 @@
                 this.$store.commit("changeMethod");
             },
           tocase:function () {
+            console.log("this.interfaceEdit:");
+
             console.log(this.interfaceEdit);
             this.$cookie.set('interface_id', this.interfaceEdit.infId)
             console.log("interface_id:"+this.$cookie.get('interface_id'));

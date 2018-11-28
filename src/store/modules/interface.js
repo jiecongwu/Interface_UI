@@ -1181,6 +1181,7 @@ export default {
     }
   },
   actions:{
+
     add:function (context,data) {
       if(context.state.interface && (data.id || (data.item && !data.item._id)))
       { console.log("进入if");

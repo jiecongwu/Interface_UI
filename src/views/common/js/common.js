@@ -224,13 +224,15 @@ $.confirm=function (title,funcOk,funcCancel) {
 }
 
 $.tip=function (content,bOk) {
+  console.log("进入tip");
     if(bOk==1)
     {
       Vue.prototype.$message.success(content);
     }
     else if(bOk==0)
-    {
+    {  console.log("进入error");
       Vue.prototype.$message.error(content);
+
     }
     else if(bOk==2)
     {
@@ -455,6 +457,7 @@ $.showBox=function (vue,obj,attr) {
     })
     return child;
 }
+
 
 
 $.param=function (obj,bKey) {

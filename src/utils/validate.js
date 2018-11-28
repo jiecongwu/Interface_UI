@@ -29,3 +29,12 @@ export function isPhone (s) {
 export function isURL (s) {
   return /^http[s]?:\/\/.*/.test(s)
 }
+
+/**
+ * json
+ * @param {*} s
+ */
+export function  jsonTosting(s,num) {
+  return JSON.stringify(s, null, num);
+}
+

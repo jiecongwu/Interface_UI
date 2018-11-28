@@ -12,7 +12,8 @@
       <transition name="component-fade" mode="out-in">
         <keep-alive>
 
-          <run  ref="edit"></run>
+
+          <run  ref="run" :interface_edit="runInterfaceEdit"  ></run>
 
         </keep-alive>
       </transition>
@@ -45,7 +46,7 @@
  //var store=require("../../../../store")._modulesNamespaceMap["project/info/interface/run/"].context;
  //  var edit=require("./component/edit.vue");
   //  var preview=require("./component/preview.vue");
- import run from './component/run.vue'
+ import run from './component/caseConcent.vue'
 
  // import $ from '@/views/common/js/common.js'
    export default {
@@ -63,7 +64,7 @@
          // "edit":edit,
 
         /*  "preview":preview,*/
-       //  "run":run
+        "run":run
       },
      //store:store,
       /*watch:{
@@ -93,7 +94,8 @@
       computed: {
         runInterfaceEdit: function () {
           var obj = $.clone(this.interfaceEdit);
-          obj.param = $.clone(this.$store.state.param);
+          console.log("obj:");
+          console.log(obj);
           return obj;
         },
         interfaceEditRole: function () {
@@ -116,8 +118,7 @@
           }
         },
         interfaceEdit: function () {
-         // return store.state.interfaceEdit
-          return 1
+          return this.$store.state.interf.interfaceEdit
 
         },
         interfaceList: function () {

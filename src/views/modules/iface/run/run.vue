@@ -4,7 +4,7 @@
 <!--            <el-button type="primary" size="mini" style="float: right;margin-top: 4px;margin-right: 5px;margin-left: 0px" v-if="interfaceEditRole" @click="save" title="生成文档" id="save">
                 生成
             </el-button>-->
-            <el-button type="primary" size="mini" style="float: right;margin-top: 4px;margin-right: 5px;margin-left: 0px" @click="run" title="运行" id="run" :loading="runPending">
+            <el-button type="primary" size="mini" style="float: right;margin-top: 4px;margin-right: 5px;margin-left: 0px" @click="run" title="运行" id="run1" :loading="runPending">
                 运行
             </el-button>
 <!--            <el-button type="primary" size="mini" style="float: right;margin-top: 4px;margin-right: 5px;margin-left: 0px" @click="$store.dispatch('project/info/interface/changeType',interfaceEditRole?'edit':'preview',{root:true})">
@@ -89,7 +89,7 @@
    // var runParam=require("./component/runParam.vue");
    // var store=require("../../../../store")._modulesNamespaceMap["project/info/interface/run/"].context;
     var sessionChange=require("@/views/common/mixins/session");
-    module.exports={
+    export default {
         props:["interfaceEdit","index"],
         data:function () {
             return {
