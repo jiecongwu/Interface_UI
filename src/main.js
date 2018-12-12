@@ -17,7 +17,10 @@ import { isAuth } from '@/utils'
 import cloneDeep from 'lodash/cloneDeep'
 import '@/views/common/lib/font-awesome/css/font-awesome.min.css' /*引入公共样式*/
 
+import JsonViewer from 'vue-json-viewer'/*引入json格式*/
 Vue.use(VueCookie)
+Vue.use(JsonViewer)
+
 Vue.config.productionTip = false
 Vue.component(CollapseTransition.name, CollapseTransition)
 

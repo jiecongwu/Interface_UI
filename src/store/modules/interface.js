@@ -20,6 +20,12 @@ export default {
     interface:null,
     interfaceEdit:null,
     uuid:'22121333',
+    caseInfo:{"afterCaseId":"",
+               "beforeCaseId":"",
+               "caseBody":"",
+               "caseId":"",
+               "caseName":"",
+               "parentId":""},
     param:[
       {
         name:"",
@@ -263,6 +269,7 @@ export default {
       state.interfaceSearchList=[];
       state.interface=null;
       state.interfaceEdit=null;
+
       state.objCopy=null;
       state.searchText="";
       state.searchType=1;
@@ -518,6 +525,15 @@ export default {
 
       state.interfaceEdit=data;
       console.log(state.interfaceEdit);
+
+
+    },
+    setCaseInfo:function (state,data) {
+      console.log("进入setCaseInfo:");
+      // console.log(data.data);
+
+      state.caseInfo=data;
+      console.log(state.caseInfo);
 
 
     },
@@ -1214,6 +1230,17 @@ export default {
       context.dispatch("changeType","edit");
      // context.getters.event.$emit("initInterface");
     },
+
+    addCase:function (context,data) {
+
+        context.commit("setCaseInfo",{"afterCaseId":"",
+        "beforeCaseId":"",
+        "caseBody":"",
+        "caseId":"",
+        "caseName":"",
+        "parentId":data.id},);
+      },
+
     getAllInterface:function (context,data) {
       console.log("getAllInterface");
 
@@ -1387,6 +1414,27 @@ export default {
           }
       } )//)
     },
+    caseInfo:function (context,caseid) {
+      //var itemData;
+      console.log("进入info")
+      return http({
+        url: http.adornUrl(`/iface/case/info/`+caseid),
+        method: 'get',
+      }).then(({data}) => {
+        if(data.code===0)
+        {
+          context.commit("setCaseInfo",data.interfaceCase);
+
+          return data;
+          }
+
+         else {
+          $.tip(data.msg,0)
+        }
+      } )//)
+    },
+
+
     showInfo:function (context,data) {
 /*      if(context.state.interface && !session.get("snapshotId"))
       {
@@ -1454,6 +1502,7 @@ export default {
       }
 //      context.getters.event.$emit("initInterface");
     },
+
     move:function (context,obj) {
       var pro;
       if(obj.obj.folder)
