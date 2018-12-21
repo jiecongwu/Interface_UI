@@ -13,7 +13,7 @@
         <keep-alive>
 
 
-          <run  ref="run" :interface_edit="runInterfaceEdit"  ></run>
+          <run  ref="run" :interface_edit="runInterfaceEdit" @wathtoggleMax="toggleMax" ></run>
 
         </keep-alive>
       </transition>

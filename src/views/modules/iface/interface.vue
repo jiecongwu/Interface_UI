@@ -50,7 +50,7 @@
     <el-row class="row" v-if="interfaceEdit">
       <transition name="component-fade" mode="out-in">
         <keep-alive>
-          <edit v-if="$store.state.interf.type=='edit'" ref="edit"></edit>
+          <edit v-if="$store.state.interf.type=='edit'" ref="edit" @wathtoggleMax="toggleMax"></edit>
         </keep-alive>
       </transition>
     </el-row>

@@ -13,7 +13,7 @@
         <el-button type="primary" size="mini" style="float: right;margin-top: 4px;margin-right: 5px;margin-left: 0px" title="另存为" id="saveas" :loading="runasPending" @click="saveAs">
           另存为
         </el-button>
-            <el-button size="mini" type="text" icon="fa fa-arrows-alt" style="margin-left: 5px;font-size: 15px" title="放大/缩小"></el-button>
+            <el-button size="mini" type="text" icon="fa fa-arrows-alt" style="margin-left: 5px;font-size: 15px" title="放大/缩小" @click="maxorsmall"></el-button>
 <!--
             <el-button size="mini" type="text" icon="fa fa-bolt" style="margin-left: 5px;font-size: 15px" title="加入用例" @click="joinTest"></el-button>
 -->
@@ -41,28 +41,38 @@
                 -->
               <el-input size="small" style="width: 90%"  v-model="interface_edit.infMethod"  :readonly="true"></el-input>
                 </el-col>
-              <el-col class="col" :span="8">
-                <el-input size="small" style="width: 95%" placeholder="域名或ip地址加端口" v-model="interface_edit.baseurl"></el-input>
+              <el-col class="col" :span="12">
+                <el-input size="small" style="width: 100%" placeholder="域名或ip地址加端口" v-model="interface_edit.baseurl"></el-input>
 
                 </el-col>
-                <el-col class="col" :span="11">
+           <!--     <el-col class="col" :span="11">
                     <el-input size="small" style="width: 100%" placeholder="请填入你请求的路由地址" v-model="interface_edit.infUrl" ></el-input>
-                </el-col>
+                </el-col>-->
             </el-row>
             <el-row class="row" style="height: 40px;line-height: 40px;padding-left: 10px;padding-right: 10px">
-              <el-input size="small" style="width: 100%" placeholder="请输入url参数" v-model="interface.urlparam">
+              <el-input size="small" style="width: 100%" placeholder="请填入你请求的路由地址" v-model="interface_edit.infUrl" ></el-input>
+            </el-row>
+            <el-row class="row" style="height: 40px;line-height: 40px;padding-left: 10px;padding-right: 10px">
+              <el-input size="small" style="width: 100%" placeholder="请输入url参数" v-model="interface_edit.urlParam">
                 <template slot="prepend">url参数</template>
               </el-input>
 
             </el-row>
-            <expand ref="body">
-              <div slot="title">body：</div>
-
-            <el-row class="row" style="padding: 0 0 0 20px;" >
-              <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 200}"  v-model="interface.caseBody"placeholder="请填入json"></el-input>
+            <el-row class="row" style="height: 40px;line-height: 40px;padding-left: 10px;padding-right: 10px">
               <el-button type="primary" size="mini" style="margin-top: 10px;margin-left: 20px"  @click="checkjson(2)">格式化检查json</el-button>
+              <el-button type="primary" size="mini" style="margin-top: 10px;margin-left: 20px"  @click="rowjson()">压缩json</el-button>
+              <el-button type="primary" size="mini" style="margin-top: 10px;margin-left: 20px"  @click="jsonView=!jsonView">{{showJson}}</el-button>
+
             </el-row>
-            </expand>
+            <el-row class="row" style="padding-left: 10px;padding-right: 10px;padding-top: 10px">
+            <el-collapse-transition>
+              <div v-show="jsonView">
+                <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 200}"  v-model="interface.caseBody"placeholder="请填入json"></el-input>
+              </div>
+            </el-collapse-transition>
+            </el-row>
+
+
 <!--            <expand ref="inject">
               <div slot="title">Inject</div>
               <runinject item="item"></runinject>
@@ -85,13 +95,14 @@
             <el-row class="row">
 
               <template >
-                <el-row class="row" style="padding: 10px 10px 10px 20px;margin-bottom: 10px" key="real">
+                  <el-row class="row" style="padding: 10px 10px 10px 10px;margin-bottom: 10px" key="real">
+
                     <span>
                         Result:&nbsp;&nbsp;<span :style="{color:responseCode.match(/^2/)?'green':'red'}">{{responseCode=='0'?'ERROR':responseCode}}</span>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #50a3ff">{{second?("耗时"+second+"秒"):""}}</span>
                     </span>
 
-                  <el-row class="row" style="padding-left: 20px;padding-right: 20px" key="example">
-                    <el-tabs type="border-card" stretch id="result">
+                  <el-row class="row"  key="example">
+                    <el-tabs type="border-card" stretch id="result" style="background-color: white;padding: 0px;margin-top: 15px;border-radius: 5px;">
                       <el-tab-pane label="格式化响应" style="overflow-y:auto" v-if="isJson==true">
                         <el-row class="row" style="word-break: break-all"  v-if="resbody!=''&&isJson==true">
                           <json-viewer style="overflow-y:auto"
@@ -206,6 +217,7 @@
             runSave: false,
             runasPending: false,
             tabType: "query",
+            jsonView: true,
             showDialog: false,
             jsonBody: "",
             /*interface: {
@@ -242,6 +254,9 @@
 
           interface:function () {
             return this.$store.state.interf.caseInfo
+          },
+          showJson :function () {
+            return  this.jsonView?"隐藏":"显示"
           },
           group:{
             get:function () {
@@ -328,6 +343,10 @@
 
         },
         methods:{
+        //隐藏显示左边菜单
+          maxorsmall: function () {
+            this.$emit('wathtoggleMax');
+          },
           checkjson (num) {
 
             if(!this.interface.caseBody || this.interface.caseBody==="")
@@ -356,6 +375,30 @@
 
                 console.log(err);
                 this.$message.error("JSON不符合格式");
+
+
+            }
+
+          },
+          rowjson () {
+
+            if(!this.interface.caseBody || this.interface.caseBody==="")
+            {
+              this.$message.error("请输入JSON");
+              return false
+            }
+            try
+            {
+              var jsonb=JSON.parse(this.interface.caseBody);
+              var   jsons= jsonTosting(jsonb,0);
+              this.interface.caseBody=jsons;
+              return true;
+            }
+            catch (err)
+            {
+
+              console.log(err);
+              this.$message.error("JSON不符合格式");
 
 
             }
@@ -422,6 +465,7 @@
             {    this.$message.error("url不符合格式");
                  return;
             }
+            this.runPending=true;
             this.$http({
               url: this.$http.adornUrl(`/iface/caseexe/run`),
               method: 'post',
@@ -430,8 +474,10 @@
                 'url': this.interface_edit.baseurl+this.interface_edit.infUrl,
                 'head':this.interface_edit.head,
                 'body':  this.jsonBody,
+                'urlParam':this.interface_edit.urlParam,
                 })
             }).then(({data}) => {
+              this.runPending=false;
               if (data && data.code === 0) {
                 this.responseCode=data.res_data.responseCode.toString();
                 !data.res_data.responseHeaders?this.resHeader="":this.resHeader=data.res_data.responseHeaders;
@@ -462,7 +508,7 @@
                 console.log(this.selParam);
 
                 this.$message({
-                  message: '操作成功',
+                  message: '发送请求完成',
                   type: 'success',
                   duration: 1500,
                   onClose: () => {
@@ -479,9 +525,11 @@
 
           this.interface_edit.head.pop();
           this.interface_edit.baseurl='https://tpt.jchl.com';
-/*          console.log("result:");
-          var result = JSON.stringify(JSON.parse("{ \"name\": \"Brett\", \"address\":\"北京路23号\", \"email\": \"123456@qq.com\" }"), null, 2);
-          console.log(result);*/
+          this.interface_edit.urlParam='https://tpt.jchl.com';
+
+          /*          console.log("result:");
+                    var result = JSON.stringify(JSON.parse("{ \"name\": \"Brett\", \"address\":\"北京路23号\", \"email\": \"123456@qq.com\" }"), null, 2);
+                    console.log(result);*/
           /*store.dispatch("initData",$.clone(this.interfaceEdit));
           store.commit("setIndex",this.index);
           if(session.get("exampleId"))

@@ -310,6 +310,7 @@
                 })
 
             },
+
             addInterface:function (item) {
                 session.remove("snapshotId");
                 session.remove("snapshotDis");
