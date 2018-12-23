@@ -1595,7 +1595,6 @@ export default {
 
       else
       {
-
           context.commit("setCase",data.data1);
           context.state.case.select=1;
           context.commit("setCaseInfo",data.data);
