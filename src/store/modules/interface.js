@@ -18,6 +18,7 @@ export default {
     interfaceCaseList:[],
     interfaceSearchList:[],
     interface:null,
+    case:null,
     interfaceEdit:null,
     uuid:'22121333',
     caseInfo:{"afterCaseId":"",
@@ -516,8 +517,13 @@ export default {
     setDrawMix:function (state,data) {
       state.drawMix=data;
     },
+    //树节点点击时的节点变量
     setInterface:function (state,data) {
       state.interface=data;
+    },
+    //树节点点击时的节点变量
+    setCase:function (state,data) {
+      state.case=data;
     },
     setInterfaceEdit:function (state,data) {
       console.log("setInterfaceEdit:");
@@ -1213,6 +1219,7 @@ export default {
       else
       {
         context.commit("setInterfaceEdit",{
+          "infId": "",
           "infName": "",
           "projectId": data.id,
            "infUrl": "",
@@ -1360,11 +1367,11 @@ export default {
         return data;
       })
     },
-    info:function (context,infid) {
+    info:function (context,obj) {
       //var itemData;
       console.log("进入info")
       return http({
-        url: http.adornUrl(`/iface/interfaceinfo/info/`+infid),
+        url: http.adornUrl(`/iface/interfaceinfo/info/`+obj.projectId),
         method: 'get',
       }).then(({data}) => {
         if(data.code==0)
@@ -1372,6 +1379,7 @@ export default {
 
           context.dispatch("showInfo",{
             data:data,
+            data1:obj
           });
           return data;
 
@@ -1414,17 +1422,21 @@ export default {
           }
       } )//)
     },
-    caseInfo:function (context,caseid) {
+    caseInfo:function (context,obj) {
       //var itemData;
       console.log("进入info")
       return http({
-        url: http.adornUrl(`/iface/case/info/`+caseid),
+        url: http.adornUrl(`/iface/case/info/`+obj.menuId),
         method: 'get',
       }).then(({data}) => {
-        if(data.code===0)
-        {
-          context.commit("setCaseInfo",data.interfaceCase);
 
+        if(data.code===0)
+        {debugger
+         // context.commit("setCaseInfo",data.interfaceCase);
+          context.dispatch("showCaseInfo",{
+            data:data.interfaceCase,
+            data1:obj
+          })
           return data;
           }
 
@@ -1435,11 +1447,11 @@ export default {
     },
 
 
-    showInfo:function (context,data) {
-/*      if(context.state.interface && !session.get("snapshotId"))
+/*    showInfo:function (context,data) {
+/!*      if(context.state.interface && !session.get("snapshotId"))
       {
         context.state.interface.select=0;
-      }*/
+      }*!/
       console.log("进入showInfo")
       if(data.data==null)
       {
@@ -1501,8 +1513,101 @@ export default {
         context.dispatch("changeType","preview");
       }
 //      context.getters.event.$emit("initInterface");
-    },
+    },*/
 
+    showInfo:function (context,data) {
+     console.log(typeof(data.data));
+      if(context.state.interface )
+      {
+        context.state.interface.select=0;
+      }
+      if(data.data==null)
+      {
+        context.commit("setInterface",null);
+      }
+      else if(typeof(data.data)=="string")
+      {
+        for(var i=0;i<context.state.interfaceList.length;i++)
+        {
+          var obj=context.state.interfaceList[i];
+          var bBreak=false;
+          for(var j=0;j<obj.data.length;j++)
+          {
+            var obj1=obj.data[j];
+            if(obj1._id==data.data)
+            {
+              obj.show=1;
+              context.commit("setInterface",obj1);
+              obj1.select=1;
+              context.commit("setInterfaceEdit",data.data1);
+              bBreak=true;
+              break;
+            }
+          }
+          if(bBreak)
+          {
+            break;
+          }
+        }
+      }
+      else
+      {
+        if(!session.get("snapshotId"))
+        {
+          context.commit("setInterface",data.data1);
+          context.state.interface.select=1;
+        }
+        context.commit("setInterfaceEdit",data.data.data);
+      }
+      context.commit("initParam");
+      if(context.state.interface)
+      {
+        context.commit("initInterface");
+      }
+      else
+      {
+        context.commit("setInterfaceEdit",null);
+      }
+      if(context.getters.interfaceEditRole)
+      {
+        context.dispatch("changeType","edit");
+      }
+      else
+      {
+        context.dispatch("changeType","preview");
+      }
+/*
+      context.getters.event.$emit("initInterface");
+*/
+    },
+    //选择树
+    showCaseInfo:function (context,data) {
+      debugger;
+      console.log("进入showCaseInfo")
+      if(context.state.case )
+      {
+        context.state.case.select=0;
+      }
+      if(data.data==null)
+      {
+        context.commit("setCase",null);
+      }
+
+      else
+      {
+
+          context.commit("setCase",data.data1);
+          context.state.case.select=1;
+          context.commit("setCaseInfo",data.data);
+
+      }
+
+
+
+      /*
+            context.getters.event.$emit("initInterface");
+      */
+    },
     move:function (context,obj) {
       var pro;
       if(obj.obj.folder)
@@ -1719,21 +1824,61 @@ export default {
       obj.param=JSON.stringify(obj.param);
       context.state.index=originIndex;*/
 
-
         http({
-          url: http.adornUrl(`/iface/interfaceinfo/${!context.state.interfaceEdit.id? 'save' : 'update'}`),
+          url: http.adornUrl(`/iface/interfaceinfo/save`),
           method: 'post',
           data: context.state.interfaceEdit
-        }).then(({data}) => {console.log(data);
+        }).then(({data}) => {
+          debugger;
+
+          console.log(data);
           if (data && data.code === 0) {
-            context.commit("initInterfaceList",data.data);
+            //判断是否新增，新增则刷新树
+            if(!context.state.interfaceEdit.infId){
+            context.state.interfaceEdit.infId=data.data.infId;
+            (function _map1(list) {
+              for(var i=0;i<list.length;i++)
+              {
+                var obj=list[i];
+                if(obj.interfaceList)
+                {
+                  if(obj.projectId==context.state.interfaceEdit.projectId)
+                  {
+                    var o={
+                      projectId:data.data.infId,
+                      parentId:data.data.projectId,
+                      type:2,
+                      name:data.data.infName,
+                      method:data.data.infMethod,
+                      select:1,
+                      menu:0
+                    }
+                    obj.show=1;
+                    obj.interfaceList.push(o);
+                    context.state.interface=o;
+                    return true;
+                  }
+                  else
+                  {
+                    var ret=_map1(obj.interfaceList);
+                    if(ret)
+                    {
+                      obj.show=1;
+                      return true;
+                    }
+                  }
+                }
+              }
+              return false;
+            })(context.state.interfaceList);
+            }
             $.message({
               message: '操作成功',
               type: 'success',
               duration: 1500,
               onClose: () => {
                 //this.visible = false
-                this.$emit('refreshDataList')
+              //  this.$emit('refreshDataList')
               }
             })
           } else {
