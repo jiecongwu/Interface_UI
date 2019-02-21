@@ -1,5 +1,5 @@
 <template>
-  <el-row class="row" style="padding: 0 10px 0 10px; " >
+  <el-row class="row" style="padding: 0 0 0 0; " >
     <el-col class="col" :span="bMax?0:6" style="padding-right: 5px;">
 
       <el-row class="row" style="background-color: white;padding: 5px;border-radius: 5px; border:10px ; height: calc(100vh - 150px);overflow-y: auto;margin-top: 5px">
@@ -7,7 +7,7 @@
         <list></list>
       </el-row>
     </el-col>
-    <el-col :span="bMax?24:18" class="col" id="interfaceContent" style="height: calc(100vh - 110px);">
+    <el-col :span="bMax?24:18" class="col" id="interfaceContent" style="height: calc(100vh - 130px);">
     <el-row class="row" v-if="interfaceEdit">
       <transition name="component-fade" mode="out-in">
         <keep-alive>

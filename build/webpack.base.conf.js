@@ -39,6 +39,7 @@ module.exports = {
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
       '@': resolve('src'),
+
     //  '$':'$',
     //  'http':'http',
     }
@@ -103,7 +104,7 @@ module.exports = {
   },
   // 引入外部库, 无需webpack打包处理
   externals: {
-    mockjs: 'Mock',
+  //  mockjs: 'Mock',
     echarts: 'echarts',
     ueditor: 'UE'
   }

@@ -76,7 +76,7 @@
                         </el-col>
                     </el-row>
                     <el-row class="row">
-                        <el-form-item label="路径">
+                        <el-form-item label="请求方法预url路径">
                             <el-select style="width: 20%;text-align: center" v-model="interfaceEdit.infMethod" @input="changeMethod" size="small">
                                 <el-option  value="GET"></el-option>
                                 <el-option  value="POST"></el-option>
@@ -84,10 +84,14 @@
                                 <el-option  value="DELETE"></el-option>
                                 <el-option  value="PATCH"></el-option>
                             </el-select>
-                            <el-input size="small" style="width: calc(75% - 14px);margin-left: 10px" placeholder="请输入接口路径(不包含BaseUrl)" v-model.trim="interfaceEdit.infUrl" @input="changeUrl" @paste.native="paste"></el-input>
-
+                          <el-input size="small" style="width: calc(75% - 14px);margin-left: 10px" placeholder="请输入域名或ip地址加端口" v-model.trim="interfaceEdit.baseurl"></el-input>
+                          <el-input size="small" style="width: calc(97% - 15px)" placeholder="请填入你请求的路由地址" v-model.trim="interfaceEdit.infUrl" ></el-input>
+                          <el-input size="small" style="width: calc(97% - 15px)" placeholder="请输入url参数" v-model.trim="interfaceEdit.urlParam">
+                            <template slot="prepend">url参数</template>
+                          </el-input>
                         </el-form-item>
                     </el-row>
+
 
                    <!-- <el-row class="row" v-if="interfaceEdit.id">
                         <el-form-item label="分享">
@@ -441,10 +445,9 @@
                     return;
                 }
                 this.savePending=true;
-                var _this=this;
+               var _this=this;
                 this.$store.dispatch("interf/save").then(function (data) {
-                    _this.savePending=false;
-                    if(data)
+                    /*if(data)
                     {
                         if(1)
                         {
@@ -459,8 +462,10 @@
                     else
                     {
                         $.notify(data,0)
-                    }
+                    }*/
                 })
+              _this.savePending=false;
+
             },
             changeUrl:function (val) {
                 this.$store.commit("interf/changeUrl",val);

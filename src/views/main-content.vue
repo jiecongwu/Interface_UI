@@ -1,5 +1,5 @@
 <template>
-  <main class="site-content" :class="{ 'site-content--tabs': $route.meta.isTab }" >
+  <main class="site-content" :class="{ 'site-content--tabs': $route.meta.isTab }">
     <!-- 主入口标签页 s -->
     <el-tabs
       v-if="$route.meta.isTab"
@@ -20,15 +20,15 @@
         v-for="item in mainTabs"
         :key="item.name"
         :label="item.title"
-        :name="item.name">
-        <el-card :body-style="siteContentViewHeight" >
+        :name="item.name"  >
+        <el-card :body-style="siteContentViewHeight"  >
           <iframe
             v-if="item.type === 'iframe'"
             :src="item.iframeUrl"
-            width="100%" height="100%" frameborder="0" scrolling="yes" >
+            width="100%" height="100%" frameborder="0" scrolling="yes" padding="0px"  >
           </iframe>
           <keep-alive v-else>
-            <router-view v-if="item.name === mainTabsActiveName" />
+            <router-view v-if="item.name === mainTabsActiveName" padding="0px"/>
           </keep-alive>
         </el-card>
       </el-tab-pane>

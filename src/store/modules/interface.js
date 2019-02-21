@@ -1422,7 +1422,87 @@ export default {
           }
       } )//)
     },
-    caseInfo:function (context,obj) {
+    //保存后更新用例的列表选择
+    updateCaseList:function(context,data){
+
+      //判断是否新增，新增则刷新树
+      if(!context.state.caseInfo.caseId) {
+        context.state.caseInfo.caseId = data.interfaceCase.caseId;
+      }
+      //判断是保存直接干掉树的节点，再添加上去，适应目录有修改的情况
+      else{
+        console.log("context.state.interfaceCaseList");
+
+        console.log(context.state.interfaceCaseList);
+        console.log(context.state.caseInfo);
+
+
+        (function _map1(list) {
+          bbq:
+          for(var i=0;i<list.length;i++)
+          {
+            var obj=list[i];
+            if(obj)
+            {
+
+              if(obj.menuId==context.state.caseInfo.caseId&&obj.type=="2")
+              { console.log("i:"+i)
+                list.splice(i,1);
+                break bbq;
+              }
+              else if(obj.interfaceList)
+              {
+                var ret=_map1(obj.interfaceList);
+                if(ret)
+                {
+                  break bbq;
+                }
+              }
+            }
+          }
+          return false;
+        })(context.state.interfaceCaseList);
+      }
+      //添加树节点
+console.log("执行到添加");
+      (function _map1(list) {
+          for(var i=0;i<list.length;i++)
+          {
+            var obj=list[i];
+            if(obj.interfaceList)
+            {
+              if(obj.menuId==context.state.caseInfo.parentId)
+              {
+                var o={
+                  menuId:context.state.caseInfo.caseId,
+                  parentId:context.state.caseInfo.parentId,
+                  type:2,
+                  name:context.state.caseInfo.caseName,
+                  select:1,
+                  menu:0
+                }
+                obj.show=1;
+                debugger;
+                obj.interfaceList.push(o);
+                //context.state.caseInfo=o;
+                return true;
+              }
+              else
+              {
+                var ret=_map1(obj.interfaceList);
+                if(ret)
+                {
+                  obj.show=1;
+                  return true;
+                }
+              }
+            }
+          }
+          return false;
+        })(context.state.interfaceCaseList);
+
+    },
+    caseDetail:function (context,obj) {
       //var itemData;
       console.log("进入info")
       return http({
@@ -1871,17 +1951,12 @@ export default {
               return false;
             })(context.state.interfaceList);
             }
-            $.message({
-              message: '操作成功',
-              type: 'success',
-              duration: 1500,
-              onClose: () => {
-                //this.visible = false
-              //  this.$emit('refreshDataList')
-              }
-            })
+            $.notify("保存成功",1);
+            return true;
           } else {
-            this.$message.error(data.msg)
+            $.tip(data.msg,2)
+            return false;
+
           }
         })
       /*      var header={

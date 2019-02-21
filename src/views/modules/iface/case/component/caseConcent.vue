@@ -18,7 +18,7 @@
             <el-button size="mini" type="text" icon="fa fa-bolt" style="margin-left: 5px;font-size: 15px" title="加入用例" @click="joinTest"></el-button>
 -->
         </el-row>
-          <el-row class="row" style="margin-top: 5px;overflow-y: auto;height: calc(100vh - 150px);padding-bottom: 80px;border-radius: 5px;font-size: 14px;background-color: white">
+          <el-row class="row" style="margin-top: 5px;overflow-y: auto;height: calc(100vh - 170px);padding-bottom: 10px;border-radius: 5px;font-size: 14px;background-color: white">
             <el-row class="row" style="height: 40px;line-height: 40px;padding-left: 10px;padding-right: 10px">
               <el-input size="small" style="width: 50%" placeholder="请填入用例名称" v-model="interface.caseName">
                   <template slot="prepend">用例名称</template>
@@ -95,7 +95,7 @@
             <el-row class="row">
 
               <template >
-                  <el-row class="row" style="padding: 10px 10px 10px 10px;margin-bottom: 10px" key="real">
+                  <el-row class="row" style="padding: 10px 10px 0px 10px;" key="real">
 
                     <span>
                         Result:&nbsp;&nbsp;<span :style="{color:responseCode.match(/^2/)?'green':'red'}">{{responseCode=='0'?'ERROR':responseCode}}</span>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #50a3ff">{{second?("耗时"+second+"秒"):""}}</span>
@@ -343,6 +343,20 @@
 
         },
         methods:{
+         //初始化结果
+          initresult (){
+            this.responseCode="",
+              this.second="",
+              this.selParam="",
+              this.resHeader= [],
+              this.reqHeader= [],
+              this.requrl="",
+              this.reqbody="",
+              this.reqmethod= "",
+              this.resbody= "",
+              this.isJson=false
+
+          },
         //隐藏显示左边菜单
           maxorsmall: function () {
             this.$emit('wathtoggleMax');
@@ -425,6 +439,7 @@
               method: 'post',
               data: this.$http.adornData(this.interface)
             }).then(({data}) => {
+              this.$store.dispatch("interf/updateCaseList",data);
               this.runSave=false;
 
               if (data && data.code === 0) {
@@ -445,6 +460,7 @@
 
           },
           runcase () {
+            this.initresult();
             //判断json是否符合格式
            if(!this.checkjson(0))
            {
@@ -523,9 +539,11 @@
         },
         created:function () {
 
+
           this.interface_edit.head.pop();
-          this.interface_edit.baseurl='https://tpt.jchl.com';
-          this.interface_edit.urlParam='https://tpt.jchl.com';
+        /*  this.interface_edit.baseurl='http://10.10.20.212:8982/';
+          this.interface_edit.urlParam='';
+*/
 
           /*          console.log("result:");
                     var result = JSON.stringify(JSON.parse("{ \"name\": \"Brett\", \"address\":\"北京路23号\", \"email\": \"123456@qq.com\" }"), null, 2);

@@ -293,7 +293,8 @@
                     session.remove("snapshotCreator");
                     session.remove("snapshotDate");
                   //  $.startLoading(2);
-                    _this.$store.dispatch("interf/info", item.projectId
+                    _this.$store.dispatch("interf/info", item
+
                     ).then(({data}) => {
                      // console.log("stoploading")
                     //  $.stopLoading()

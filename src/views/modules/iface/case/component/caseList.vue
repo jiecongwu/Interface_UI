@@ -288,7 +288,7 @@
                   console.log("进入case");
                   console.log(item);
                   //  $.startLoading(2);
-                  _this.$store.dispatch("interf/caseInfo", item.menuId
+                  _this.$store.dispatch("interf/caseDetail", item
                   )
                 })
 

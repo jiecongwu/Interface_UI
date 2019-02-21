@@ -174,7 +174,7 @@ img {
     text-transform: uppercase;
     white-space: nowrap;
     color: #fff;
-    
+
     &-lg,
     &-mini {
       margin: 0 5px;
@@ -317,7 +317,7 @@ img {
     background: $content--background-color;
   }
   &--tabs {
-    padding: 55px 0 0;
+    padding: 45px 0 0;
   }
   > .el-tabs {
     > .el-tabs__header {
@@ -351,6 +351,13 @@ img {
         cursor: pointer;
         .el-icon--right {
           margin-left: 0;
+        }
+      }
+      > .el-tab-pane{
+         .el-card{
+           .el-card__body{
+            padding: 10px 10px 0px 10px;
+          }
         }
       }
     }
