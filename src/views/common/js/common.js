@@ -260,7 +260,6 @@ $.notify=function (content,bOk) {
 }
 
 $.input=function (title,func,defaultValue) {
-   console.log(Vue.prototype);
    Vue.prototype.$prompt(title, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',

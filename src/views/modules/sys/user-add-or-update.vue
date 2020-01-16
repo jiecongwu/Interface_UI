@@ -26,9 +26,9 @@
       </el-form-item>
       <el-form-item label="状态" size="mini" prop="status">
         <el-radio-group v-model="dataForm.status">
-          <el-radio :label="0">禁用</el-radio>
-          <el-radio :label="1">正常</el-radio>
-        </el-radio-group>
+        <el-radio :label="0">禁用</el-radio>
+        <el-radio :label="1">正常</el-radio>
+      </el-radio-group>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">

@@ -192,7 +192,13 @@
    // var con=require("common/js/config");
    import expand from '@/views/component/expand.vue';
    import interfaceParam from './interfaceParam.vue';
-   import inParamQuery from './inparamQuery.vue'
+   import inParamQuery from './inparamQuery.vue';
+   import ellc from '@/views/modules/iface/run/component/ellc.vue'
+   import caseid from '@/views/modules/iface/case/case.vue';
+   import main from '@/views/main.vue';
+
+   import w407 from '@/views/common/405.vue';
+
    //var saveTemplate=require("./saveTemplate.vue")
     export default {
         data: function () {
@@ -200,7 +206,9 @@
                 savePending:false,
                 snapshot:{},
                 mailShow:false,
-                timerSave:null
+                timerSave:null,
+                arrroand :[]
+
             }
         },
         components:{
@@ -429,8 +437,35 @@
             console.log(this.interfaceEdit);
             this.$cookie.set('interface_id', this.interfaceEdit.infId)
             console.log("interface_id:"+this.$cookie.get('interface_id'));
+            debugger;
+            if(this.arrroand.includes('caseid'+this.interfaceEdit.infId)){
+                 console.log('red');
 
-            this.$router.push({ name: "iface-case/case" });
+            }else{
+              this.arrroand.push('caseid'+this.interfaceEdit.infId);
+                console.log('notred')
+            }
+
+           // this.$router.addRoutes([{ path: '/', component: caseid, name: 'caseid'+this.interfaceEdit.infId, meta: { title: 'this.interfaceEdit.infName',isTab: true} }]);
+           // this.$router.addRoutes([{ path: '/407', component: w407, name: '407', meta: { title: '407' , isTab: true, iframeUrl: ''} }]);
+            this.$router.addRoutes(
+            [{
+              path: '/',
+                component: main,
+              name: 'main1',
+              redirect: { name: 'home' },
+              meta: { title: '主入口整体布局' },
+              children: [
+                { path: '/', component: caseid, name: 'caseid'+this.interfaceEdit.infId, meta: { title: 'this.interfaceEdit.infName',isTab: true} }
+              ]
+            }]);
+
+            this.$router.push({ name : 'caseid'+this.interfaceEdit.infId,query:{name:this.interfaceEdit.infId}}, );
+
+            //this.$router.push({ name : 'caseid',query:{name:this.interfaceEdit.infId}}, );
+
+            this.$route.meta.title = this.interfaceEdit.infName;
+
           },
             save:function () {
                console.log(this.interfaceEdit);
